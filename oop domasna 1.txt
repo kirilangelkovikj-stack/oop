@@ -1,0 +1,54 @@
+#include <bits/stdc++.h>
+using namespace std;
+
+struct Pixel {
+    uint8_t r, g, b;
+    Pixel() : r(0), g(0), b(0) {}
+    Pixel(uint8_t R, uint8_t G, uint8_t B) : r(R), g(G), b(B) {}
+};
+
+struct Image {
+    int sirina;
+    int visina;
+    vector<Pixel> data;
+
+    Image(int w = 0, int h = 0) : sirina(w), visina(h), data(w * h) {}
+
+    Pixel& at(int x, int y) {
+        return data[y * sirina + x];
+    }
+};
+struct CImage {
+    static bool PPM(const Image &img, const string &ime) {
+        ofstream out(ime);
+        if (!out) return false;
+        out << "P6\n" << img.sirina << " " << img.visina << "\n255\n";
+        out.write(reinterpret_cast<const char*>(img.data.data()), img.data.size() * 3);
+        return out.good();
+    }
+};
+int main() {
+    int w, h;
+    cin >> w >> h;
+    if (w <= 0 || h <= 0) return 1;
+    const int MAXN = 10000;
+    if (w > MAXN || h > MAXN) return 1;
+    Image img(w, h);
+    double centerx = (w - 1) / 2.0;
+    double centery = (h - 1) / 2.0;
+    double maxrast = sqrt(centerx*centerx + centery*centery);
+
+    for (int y = 0; y < h; ++y) {
+        for (int x = 0; x < w; ++x) {
+            double dx = x - centerx;
+            double dy = y - centery;
+            double rastojanie = sqrt(dx*dx + dy*dy);
+            double t = rastojanie / maxrast;
+            if (t > 1) t = 1;
+            uint8_t senka = static_cast<uint8_t>(255 * (1 - t));
+            img.at(x, y) = Pixel(senka, senka, senka);
+        }
+    }
+    CImage::PPM(img, "gradient.ppm");
+    return 0;
+}
