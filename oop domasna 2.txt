@@ -1,0 +1,104 @@
+#include <iostream>
+using namespace std;
+
+class Frac {
+    int n; //broitel
+    int d; //imenitel
+
+public:
+
+
+    int N() const { return n; }
+    int D() const { return d; }
+
+    void setN(int x) { n = x; }
+    void setD(int x) { d = x; }
+
+    Frac() {
+        n = 0;
+        d = 1;
+    }
+
+    Frac(int n, int d = 1) {
+        this->n = n;
+        this->d = d;
+    }
+
+    Frac(const Frac& other) {
+        this->n = other.n;
+        this->d = other.d;
+    }
+
+    Frac& operator=(const Frac& other) {
+        if (this != &other) {
+            this->n = other.n;
+            this->d = other.d;
+        }
+        return *this;
+    }
+
+
+    Frac operator+(const Frac& b) const {
+        return Frac(n * b.d + b.n * d, d * b.d);
+    }
+
+    Frac operator-(const Frac& b) const {
+        return Frac(n * b.d - b.n * d, d * b.d);
+    }
+
+    Frac operator*(const Frac& b) const {
+        return Frac(n * b.n, d * b.d);
+    }
+
+    Frac operator/(const Frac& b) const {
+        return Frac(n * b.d, d * b.n);
+    }
+
+    bool operator==(const Frac& b) const {
+        return (n * b.d == b.n * d);
+    }
+
+    bool operator<(const Frac& b) const {
+        return (n * b.d < b.n * d);
+    }
+
+    bool operator>(const Frac& b) const {
+        return (n * b.d > b.n * d);
+    }
+
+
+    void print() const {
+        cout << n << "/" << d;
+    }
+
+    ~Frac() {}
+};
+
+ostream& operator<<(ostream& o, const Frac& f) {
+    o << f.N() << "/" << f.D();
+    return o;
+}
+
+int main() {
+    Frac a(2,3);
+    Frac b(4,5);
+
+    Frac c=a*b;
+    Frac d=a+b;
+    Frac e=a-b;
+    Frac f=a/b;
+
+    cout <<a<<endl;
+    cout <<b<<endl;
+
+    cout<<"a * b = "<<c<<endl;
+    cout<<"a + b = "<<d<<endl;
+    cout<<"a - b = "<<e<<endl;
+    cout<<"a / b = "<<f<<endl;
+
+    cout<<(a>b)<<endl;
+    cout<<(a<b)<<endl;
+    cout<<(a==b)<<endl;
+
+    return 0;
+}
