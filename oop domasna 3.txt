@@ -1,0 +1,133 @@
+#include <iostream>
+using namespace std;
+
+class MyVec {
+private:
+    int *elements;
+    int size;
+    int capacity;
+
+    void _copy(const MyVec& orig) {
+        this->capacity = orig.capacity;
+        this->size = orig.size;
+        this->elements = new int[this->capacity];
+        for (int i=0; i<this->size; i++) {
+            this->elements[i] = orig.elements[i];
+        }
+    }
+
+public:
+    MyVec(int size = 0, int value = 0) {
+        int capacity = 4;
+        while (size >= capacity) {
+            capacity *= 2;
+        }
+        elements = new int[capacity];
+        this->capacity = capacity;
+        this->size = size;
+
+        for (int i=0; i < size; i++) {
+            elements[i] = value;
+        }
+    }
+    MyVec(const MyVec& orig) {
+        _copy(orig);
+    }
+    ~MyVec() {
+        delete [] elements;
+    }
+    MyVec& operator=(const MyVec& orig) {
+        if (this != &orig) {
+            delete [] this->elements;
+            _copy(orig);
+        }
+        return *this;
+    }
+    void print() const {
+        cout << "C: " << capacity << " S: " << size << " : ";
+        for (int i=0; i<size; i++) cout << elements[i] << " ";
+        cout << endl;
+    }
+    void push(int val) {
+        if (this->size == this->capacity) {
+            int newcap = this->capacity * 2;
+            int *tmp = new int[newcap];
+            for (int i=0; i<this->size; i++)
+            tmp[i] = this->elements[i];
+            delete [] elements;
+            elements = tmp;
+            capacity = newcap;
+        }
+        elements[size++] = val;
+    }
+    void pop() {
+        if (size > 0)
+            size--;
+    }
+    int operator[](int i) const {
+        if (i < 0 || i >= size)
+            return 42;
+        return elements[i];
+    }
+    int at(int i) const {
+        if (i < 0 || i >= size) {
+            throw out_of_range("Invalid index!");
+        }
+        return elements[i];
+    }
+    int front() const {
+        if (size == 0) throw runtime_error("Vector is empty!");
+        return elements[0];
+    }
+    int back() const {
+        if (size == 0) throw runtime_error("Vector is empty!");
+        return elements[size - 1];
+    }
+    int* data() const {
+        return elements;
+    }
+    void sort() {
+        for (int i=0; i<size; i++) {
+            for (int j=i+1; j<size; j++) {
+                if (elements[j] < elements[i]) {
+                    int tmp = elements[i];
+                    elements[i] = elements[j];
+                    elements[j] = tmp;
+                }
+            }
+        }
+    }
+    MyVec operator+(const MyVec &other) const {
+        MyVec result(this->size + other.size);
+        for (int i=0; i<this->size; i++)
+            result.elements[i] = this->elements[i];
+        for (int i=0; i<other.size; i++)
+            result.elements[this->size + i] = other.elements[i];
+        return result;
+    }
+};
+int main() {
+    MyVec a(3, 7);
+    MyVec b(2, 1);
+    cout << "A: "; a.print();
+    cout << "B: "; b.print();
+    MyVec c = a + b;
+    cout << "C = A + B: ";
+    c.print();
+    c.push(99);
+    cout << "After push: "; c.print();
+    c.pop();
+    cout <<  "After pop:  ";c.print();
+    cout << "c.at(2) = " << c.at(2) << endl;
+    cout << "front = " << c.front() << endl;
+    cout << "back  = " << c.back()  << endl;
+    c.push(5);
+    c.push(2);
+    cout << "Before sort: "; c.print();
+    c.sort();
+    cout << "After sort:  "; c.print();
+    int* ptr = c.data();
+    cout << "First element via data(): " << ptr[0] << endl;
+    return 0;
+}
+
