@@ -1,0 +1,108 @@
+#include <bits/stdc++.h>
+
+using namespace std;
+
+class vec3 {
+    float x, y, z;
+    void copy(const vec3& original) {
+        x = original.x;
+        y = original.y;
+        z = original.z;
+    }
+public:
+    vec3(float x=1, float y=1, float z=1) {
+        this->x = x;
+        this->y = y;
+        this->z = z;
+    }
+    vec3(const vec3 &other) {
+        copy(other);
+    }
+    vec3& operator=(const vec3& original) {
+        if (this != &original)
+            copy(original);
+        return *this;
+    }
+    float operator~() const {
+        return sqrt(x*x + y*y + z*z);
+    }
+    vec3 operator+(const vec3& other) const {
+        return vec3(x + other.x, y + other.y, z + other.z);
+    }
+    vec3 operator+() const {
+        return *this;
+    }
+    vec3 operator-() const {
+        return vec3(-x, -y, -z);
+    }
+    vec3 operator-(const vec3& other) const {
+        return vec3(x - other.x, y - other.y, z - other.z);
+    }
+    vec3 operator*(float number) const {
+        return vec3(x * number, y * number, z * number);
+    }
+    bool operator<(const vec3& other) const { return ~(*this) < ~other; }
+    bool operator>(const vec3& other) const { return ~(*this) > ~other; }
+    bool operator==(const vec3& other) const { return x==other.x && y==other.y && z==other.z; }
+    bool operator!=(const vec3& other) const { return !(*this == other); }
+    bool operator<=(const vec3& other) const { return !(*this > other); }
+    bool operator>=(const vec3& other) const { return !(*this < other); }
+    vec3& operator++() {
+        x++; y++; z++;
+        return *this;
+    }
+    vec3 operator++(int) {
+        vec3 tmp = *this;
+        x++; y++; z++;
+        return tmp;
+    }
+    vec3& operator--() {
+        x--; y--; z--;
+        return *this;
+    }
+    vec3 operator--(int) {
+        vec3 tmp = *this;
+        x--; y--; z--;
+        return tmp;
+    }
+    float operator[](int index) const {
+        if (index == 0) return x;
+        if (index == 1) return y;
+        if (index == 2) return z;
+        return -1;
+    }
+    friend ostream& operator<<(ostream& o, const vec3& v);
+    friend istream& operator>>(istream& o, vec3& v);
+
+    ~vec3() {}
+};
+ostream& operator<<(ostream& o, const vec3& v) {
+    o << "(" << v.x << ", " << v.y << ", " << v.z << ")";
+    return o;
+}
+istream& operator>>(istream& o, vec3& v) {
+    o >> v.x >> v.y >> v.z;
+    return o;
+}
+int main() {
+    vec3 v1(1,4,5), v2;
+    cin>>v2;
+    cout<<v1<<v2<<endl;
+    cout << "module:  v1: " << ~v1 << ", v2: " << ~v2 << endl;
+    cout << "v1<v2: " <<  (v1 < v2)
+         << "; v1>v2: " << (v1 > v2)
+         << "; v1==v2: " << (v1 == v2)
+         << "; v1!=v2: " << (v1 != v2)
+         << "; v1>=v2: " << (v1 >= v2)
+         << "; v1<=v2: " << (v1 <= v2) << endl;
+    cout << "operator*: " << v1 * 5
+         << "; operator+: " << v1 + v2
+         << "; operator-: " << v1 - v2
+         << "; operator+: " << +v1
+         << "; operator-: " << -v2
+         << "; operator--: " << --v2 << ", " << v2
+         << "; operator++: " << ++v2 << ", " << v2 << endl;
+    cout << "operator[]: " << v2[1] << endl;
+
+    return 0;
+}
