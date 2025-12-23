@@ -1,0 +1,96 @@
+#include <bits/stdc++.h>
+using namespace std;
+class MyStr {
+    char * content;
+    void _cpy(const MyStr& orig) {
+        this->content = new char[orig.length() + 1];
+        const char * s = orig.content;
+        char * p = content;
+        while (*s) {
+            *p = *s;
+            p++; s++;
+        }
+        *p = '\0';
+    }
+public:
+    MyStr(const char * st = "") {
+        this->content = new char[strlen(st) + 1];
+        const char * s = st;
+        char * p = content;
+        while (*s) {
+            *p = *s;
+            p++; s++;
+        }
+        *p = '\0';
+    }
+    ~MyStr() {
+        delete [] this->content;
+    }
+    MyStr(const MyStr& orig) {
+        _cpy(orig);
+    }
+    MyStr& operator=(const MyStr& orig) {
+        if (this != &orig) {
+            delete [] this->content;
+            _cpy(orig);
+        }
+        return *this;
+    }
+    uint32_t length() const {
+        const char* p = this->content;
+        uint32_t len = 0;
+        while (*p) {
+            len++;
+            p++;
+        }
+        return len;
+    }
+    MyStr operator+(const MyStr& second) {
+        int l = this->length() + second.length();
+        MyStr rez;
+        delete [] rez.content;
+        rez.content = new char[l + 1];
+        strcpy(rez.content, this->content);
+        strcat(rez.content, second.content);
+
+        return rez;
+    }
+    MyStr& operator+=(const MyStr& second) {
+        char * tmp = new char[this->length() + second.length() + 1];
+
+        strcpy(tmp, this->content);
+        strcat(tmp, second.content);
+
+        delete [] this->content;
+        this->content = tmp;
+
+        return *this;
+    }
+
+    friend ostream& operator<<(ostream & o, const MyStr& s);
+    friend istream& operator>>(istream & i, MyStr& s);
+};
+ostream& operator<<(ostream & o, const MyStr& s) {
+    o << s.content;
+    return o;
+}
+istream& operator>>(istream & in, MyStr& s) {
+    char buffer[1000];
+    in.getline(buffer, 1000);
+    delete [] s.content;
+    s.content = new char[strlen(buffer) + 1];
+    strcpy(s.content, buffer);
+    return in;
+}
+int main() {
+    MyStr s1("Hello ");
+    MyStr s2("World");
+    MyStr s3 = s1 + s2;
+    cout << s3 << endl;
+    s1 += s2;
+    cout << s1 << endl;
+    MyStr s;
+    cin >> s;
+    cout << s << endl;
+    return 0;
+}
